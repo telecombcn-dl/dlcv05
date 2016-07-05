@@ -11,6 +11,21 @@ Activate Virtual Environment (Inside the Repository Folder)
 ```
 source keras_env/bin/activate
 ```
+
+Work on a session (Allows exiting and closing connection and it will be still running and printing)
+```
+tmux new -s nameofthesession
+```
+Exit from a session but it will still be active
+```
+ctrl+b and then d
+```
+Open an active session
+```
+tmux attach or tmux attach -t nameofthesession
+```
+[More] (https://gist.github.com/MohamedAlaa/2961058)
+
 Run a file
 ```
 $ python asd.py
@@ -19,8 +34,28 @@ $ python asd.py
 ## Project
 [Slides] (http://imatge-upc.github.io/telecombcn-2016-dlcv/slides/D1P-kickoff.pdf)
 
+
 ### Task 1: Architecture
 Build your own network to solve a classification task.
+
+Script mnist_cnn.py:
+- Options added at the beginning of the script
+- We can save and load trained models
+- We have the value of the loss & accuracy at each epoch
+- Next step: Modifying the network architecture
+
+Script cifar10_cnn.py: 
+- Options added at the beginning of the script
+- We can save and load trained models
+- We have the value of the loss & accuracy at each epoch
+- Next step: Modifying the network architecture
+
+If you are saving the model be careful when setting the paths and the name not to overwrite!!
+
+In process... Data Augmentation
+
+When we save the weights of the model we can obtain the memory used. 
+
 ### Task 2: Training
 Study the impact in performance of:
 - Data augmentation.
