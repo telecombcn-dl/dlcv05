@@ -14,23 +14,45 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
+import os
+import time
+
+# Options
+
+TRAIN = 1
+TEST = 1
+SAVE_MODEL = 1
+LOAD_MODEL = 0
+
+# Paths to set
+model_name = "mnist_cnn_v1"
+model_path = "models_trained/" +model_name+"/"
+weights_path = "models_trained/"+model_name+"/weights/"
+
+# Create directories for the models
+if not os.path.exists(model_path):
+    os.makedirs(model_path)
+    os.makedirs(weights_path)
+
+# Network Parameters
 
 batch_size = 128
 nb_classes = 10
 nb_epoch = 12
 
-# input image dimensions
+# Input image dimensions
 img_rows, img_cols = 28, 28
-# number of convolutional filters to use
+# Mumber of convolutional filters to use
 nb_filters = 32
-# size of pooling area for max pooling
+# Size of pooling area for max pooling
 nb_pool = 2
-# convolution kernel size
+# Convolution kernel size
 nb_conv = 3
 
-# the data, shuffled and split between train and test sets
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
+# Data Loading and Preprocessing
 
+# The data, shuffled and split between train and test sets
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
 X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
 X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
 X_train = X_train.astype('float32')
@@ -41,10 +63,15 @@ print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
-# convert class vectors to binary class matrices
+# Data Augmentation
+
+
+# Convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
+
+# Model Definition
 model = Sequential()
 
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
@@ -67,8 +94,42 @@ model.compile(loss='categorical_crossentropy',
               optimizer='adadelta',
               metrics=['accuracy'])
 
-model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
-          verbose=1, validation_data=(X_test, Y_test))
-score = model.evaluate(X_test, Y_test, verbose=0)
-print('Test score:', score[0])
-print('Test accuracy:', score[1])
+# Load model (The epoch has to be set)
+
+if(LOAD_MODEL):
+	model.load_weights(weights_path+model_name+"weights_epoch1.h5")
+	print("Loaded model from disk: "+weights_path+model_name+"weights_epoch1.h5")
+
+
+# Train the network: Iterate nb_epochs, at the end of each epoch store the model weights, the loss function & the accuracy values
+
+if (TRAIN):
+	start_time = time.time()
+	for epoch in range(1,nb_epoch+1):
+		print ("Number of epoch: " +str(epoch)+"/"+str(nb_epoch))
+		scores = model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=1,
+	          verbose=1, validation_data=(X_test, Y_test))
+		f = open(model_path+model_name+"_scores_training.txt", 'w')
+		f.write(str(scores.history))
+		if(SAVE_MODEL):
+			model.save_weights(weights_path+model_name+"weights_epoch"+str(epoch)+".h5")
+			print("Saved model to disk in: "+weights_path+model_name+"weights_epoch"+str(epoch)+".h5")
+	f.close()
+
+	# Compute time elapsed and save it
+	time_elapsed = time.time() - start_time
+	print("Time Elapsed: ", end_time)
+	f = open(model_path+model_name+"_time_elapsed.txt", 'w')
+	f.write(str(time_elapsed))
+	f.close()
+
+# Test 
+
+if(TEST):
+	score = model.evaluate(X_test, Y_test, verbose=0)
+	f = open(model_path+model_name+"scores_test.txt", 'w')
+	f.write(str(score))
+	f.close()
+	print('Test score:', score[0])
+	print('Test accuracy:', score[1])
+
