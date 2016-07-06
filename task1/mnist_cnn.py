@@ -20,15 +20,15 @@ import time
 
 # Options
 
-TRAIN = 0
-TEST = 0
+TRAIN = 1
+TEST = 1
 SAVE_MODEL = 1
-SAVE_WEIGHTS = 0
+SAVE_WEIGHTS = 1
 LOAD_MODEL = 0
 LOAD_WEIGHTS = 0 
 
 # Paths to set
-model_name = "mnist_cnn_v1"
+model_name = "mnist_cnn_3conv"
 model_path = "models_trained/" +model_name+"/"
 weights_path = "models_trained/"+model_name+"/weights/"
 
@@ -46,7 +46,8 @@ nb_epoch = 12
 # Input image dimensions
 img_rows, img_cols = 28, 28
 # Mumber of convolutional filters to use
-nb_filters = 32
+nb_filters1 = 32
+nb_filters2 = 16
 # Size of pooling area for max pooling
 nb_pool = 2
 # Convolution kernel size
@@ -77,11 +78,13 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 # Model Definition
 model = Sequential()
 
-model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
+model.add(Convolution2D(nb_filters1, nb_conv, nb_conv,
                         border_mode='valid',
                         input_shape=(1, img_rows, img_cols)))
 model.add(Activation('relu'))
-model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
+model.add(Convolution2D(nb_filters1, nb_conv, nb_conv))
+model.add(Activation('relu'))
+model.add(Convolution2D(nb_filters2, nb_conv, nb_conv))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
 model.add(Dropout(0.25))
@@ -120,11 +123,11 @@ model.compile(loss='categorical_crossentropy',
 
 if (TRAIN):
 	start_time = time.time()
+	f = open(model_path+model_name+"_scores_training.txt", 'w')
 	for epoch in range(1,nb_epoch+1):
 		print ("Number of epoch: " +str(epoch)+"/"+str(nb_epoch))
 		scores = model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=1,
 	          verbose=1, validation_data=(X_test, Y_test))
-		f = open(model_path+model_name+"_scores_training.txt", 'w')
 		f.write(str(scores.history))
 		if(SAVE_WEIGHTS):
 			model.save_weights(weights_path+model_name+"weights_epoch"+str(epoch)+".h5")
@@ -133,7 +136,7 @@ if (TRAIN):
 
 	# Compute time elapsed and save it
 	time_elapsed = time.time() - start_time
-	print("Time Elapsed: ", end_time)
+	print("Time Elapsed: "+str(time_elapsed))
 	f = open(model_path+model_name+"_time_elapsed.txt", 'w')
 	f.write(str(time_elapsed))
 	f.close()
