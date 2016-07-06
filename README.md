@@ -38,6 +38,11 @@ $ python asd.py
 ### Task 1: Architecture
 Build your own network to solve a classification task.
 
+Install h5py (For saving the weights)
+```
+pip install h5py
+```
+
 Script mnist_cnn.py:
 - Options added at the beginning of the script
 - We can save and load trained models
