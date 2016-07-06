@@ -28,7 +28,7 @@ LOAD_MODEL = 0
 LOAD_WEIGHTS = 0 
 
 # Paths to set
-model_name = "mnist_cnn_v1"
+model_name = "mnist_cnn_3conv"
 model_path = "models_trained/" +model_name+"/"
 weights_path = "models_trained/"+model_name+"/weights/"
 
@@ -45,8 +45,10 @@ nb_epoch = 12
 
 # Input image dimensions
 img_rows, img_cols = 28, 28
-# Number of convolutional filters to use Layer 1,2
+# Number of convolutional filters to use CL1,CL2
 nb_filters1 = 32
+# Number of convolutional filters to use CL3
+nb_filters2 = 16
 # Size of pooling area for max pooling
 nb_pool = 2
 # Convolution kernel size
@@ -82,6 +84,8 @@ model.add(Convolution2D(nb_filters1, nb_conv, nb_conv,
                         input_shape=(1, img_rows, img_cols)))
 model.add(Activation('relu'))
 model.add(Convolution2D(nb_filters1, nb_conv, nb_conv))
+model.add(Activation('relu'))
+model.add(Convolution2D(nb_filters2, nb_conv, nb_conv))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
 model.add(Dropout(0.25))
