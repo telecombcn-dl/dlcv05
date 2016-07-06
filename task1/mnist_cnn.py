@@ -14,15 +14,18 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
+from keras.models import model_from_json
 import os
 import time
 
 # Options
 
-TRAIN = 1
-TEST = 1
+TRAIN = 0
+TEST = 0
 SAVE_MODEL = 1
+SAVE_WEIGHTS = 0
 LOAD_MODEL = 0
+LOAD_WEIGHTS = 0 
 
 # Paths to set
 model_name = "mnist_cnn_v1"
@@ -90,15 +93,27 @@ model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
-model.compile(loss='categorical_crossentropy',
-              optimizer='adadelta',
-              metrics=['accuracy'])
+# Save model architecture
+
+if(SAVE_MODEL):
+	json_string = model.to_json()
+	f = open(model_path+model_name+".json", 'w')
+	f.write(json_string)
+	f.close()
 
 # Load model (The epoch has to be set)
 
 if(LOAD_MODEL):
+	model = model_from_json(open(model_path+model_name+".json").read())
+
+if(LOAD_WEIGHTS):
 	model.load_weights(weights_path+model_name+"weights_epoch1.h5")
 	print("Loaded model from disk: "+weights_path+model_name+"weights_epoch1.h5")
+
+
+model.compile(loss='categorical_crossentropy',
+              optimizer='adadelta',
+              metrics=['accuracy'])
 
 
 # Train the network: Iterate nb_epochs, at the end of each epoch store the model weights, the loss function & the accuracy values
@@ -111,7 +126,7 @@ if (TRAIN):
 	          verbose=1, validation_data=(X_test, Y_test))
 		f = open(model_path+model_name+"_scores_training.txt", 'w')
 		f.write(str(scores.history))
-		if(SAVE_MODEL):
+		if(SAVE_WEIGHTS):
 			model.save_weights(weights_path+model_name+"weights_epoch"+str(epoch)+".h5")
 			print("Saved model to disk in: "+weights_path+model_name+"weights_epoch"+str(epoch)+".h5")
 	f.close()
