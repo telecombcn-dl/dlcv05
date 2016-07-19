@@ -6,6 +6,7 @@ Albert Jiménez, Marc Górriz, Adrià Romero, Michelle Compri, Denjj Osele
 
 ## Project
 [Project Slides] (https://github.com/telecombcn-dl/dlcv05/blob/master/Project%20Presentation.pdf)
+
 [Presentation] (https://docs.google.com/presentation/d/1mflcMsA4rgJHat2hwqVu6zJjPiipFmea3BJUwwSxVtI/edit#slide=id.g14a9129f29_0_0)
 
 
