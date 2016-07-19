@@ -1,7 +1,7 @@
-# DLCV05
+# DLCV-05
 
 ## Project
-[Project Slides] (http://imatge-upc.github.io/telecombcn-2016-dlcv/slides/D1P-kickoff.pdf)
+[Project Slides] (https://github.com/telecombcn-dl/dlcv05/blob/master/Project%20Presentation.pdf)
 
 
 ### Task 1: Architecture
